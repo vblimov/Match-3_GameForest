@@ -1,14 +1,15 @@
 ﻿using System;
+using MainMenu;
 
 namespace Match_3_GameForest
 {
     public static class Program
     {
         [STAThread]
-        static void Main()
+        private static void Main()
         {
-            using (var game = new Game1())
-                game.Run();
+            using var mainMenu = new MainMenuViewer();
+            mainMenu.Run();
         }
     }
 }
