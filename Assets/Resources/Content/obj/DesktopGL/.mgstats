@@ -1,2 +1,3 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
-"D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/Fonts/font.spritefont","D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/bin/DesktopGL/Fonts/font.xnb","FontDescriptionProcessor","SpriteFontContent",2008,21538,0,2968307
+"D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/UI/button.png","D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/bin/DesktopGL/UI/button.xnb","TextureProcessor","Texture2DContent",276,21301,0,3284027
+"D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/UI/tile.png","D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/bin/DesktopGL/UI/tile.xnb","TextureProcessor","Texture2DContent",203,10901,0,001913

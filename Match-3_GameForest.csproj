@@ -26,6 +26,5 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\Resources" />
-    <Folder Include="Assets\Scripts\EventSystem" />
   </ItemGroup>
 </Project>

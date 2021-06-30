@@ -1,5 +1,4 @@
 ﻿using System;
-using MainMenu;
 
 namespace Match_3_GameForest
 {
@@ -8,7 +7,7 @@ namespace Match_3_GameForest
         [STAThread]
         private static void Main()
         {
-            using var mainMenu = new MainMenuViewer();
+            using var mainMenu = new Match3Game();
             mainMenu.Run();
         }
     }
