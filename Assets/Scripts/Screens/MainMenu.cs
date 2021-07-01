@@ -7,8 +7,9 @@ using UIComponents.GameComponents;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Resources;
 
-    public class MainMenu : Screen
+public class MainMenu : Screen
     {
         #region Fields
         
@@ -27,8 +28,8 @@ using Microsoft.Xna.Framework.Input;
         public override void Load()
         {
             var exitBut = new Button(
-                ScreenManager.Game.Content.Load<Texture2D>(GameSettings._paths.buttonPath),
-                ScreenManager.Game.Content.Load<SpriteFont>(GameSettings._paths.fontPath),
+                ResourcesLoader.Button,
+                ResourcesLoader.Font,
                 new Vector2(250, 250),
                 GameSettings._names.playButtonText);
             buttons = new List<TouchableComponent>()

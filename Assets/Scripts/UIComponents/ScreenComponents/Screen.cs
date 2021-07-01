@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace UIComponents.ScreenComponents
@@ -8,6 +9,7 @@ namespace UIComponents.ScreenComponents
     {
         #region Fields
 
+        protected ContentManager content;
         protected readonly Color _backgroundColor = Color.CornflowerBlue;
 
         public ScreenManager ScreenManager { get; internal set; }

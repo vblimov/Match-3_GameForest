@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using Enums;
 using GameParams;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Resources;
+using UIComponents;
 using UIComponents.GameComponents;
 using UIComponents.GameComponents.TileGrid;
 using UIComponents.ScreenComponents;
@@ -14,7 +17,7 @@ namespace Match_3_GameForest.Screens
         #region Fields
         
         private SpriteBatch _spriteBatch;
-        private Tile _tile;
+        private Grid _grid = new Grid();
 
         #endregion
 
@@ -27,25 +30,34 @@ namespace Match_3_GameForest.Screens
         public GamePlay(ScreenManager screenManager)
         {
             ScreenManager = screenManager;
+            _spriteBatch = ScreenManager.SpriteBatch;
+            content = ScreenManager.Game.Content;
+            _grid.LoadContent(content);
         }
         
         public override void Load()
         {
-            _tile = new Tile(
-                ScreenManager.Game.Content.Load<Texture2D>("Tiles/Apple"),
-                new Vector2(0, 0),
-                TileType.Apple
-            );
+            Timer.Reset();
+            Timer.AddListener(() => {ScreenManager.Game.Exit();});
             base.Load();
         }
 
         public override void Draw(GameTime gameTime)
         {
-            _spriteBatch = ScreenManager.SpriteBatch;
             _spriteBatch.Begin();
-            _tile.Draw(gameTime, _spriteBatch);
+            _grid.Draw(gameTime, _spriteBatch);
+            _spriteBatch.DrawString(
+                ResourcesLoader.Font, 
+                Timer._timeRemainingFormatted, 
+                new Vector2(500, 25),
+                GameSettings._colors.penColor);
             _spriteBatch.End();
             base.Draw(gameTime);
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            Timer.Update(gameTime);
         }
         #endregion
     }

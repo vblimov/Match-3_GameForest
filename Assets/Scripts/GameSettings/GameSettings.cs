@@ -56,13 +56,15 @@ namespace GameParams
             public int fieldSize;
             public float defaultScale;
             public float tileScale;
+            public int minRectangleSize;
+            public int tileSize;
         }
 
         public static SConstants _constants = new SConstants()
         {
             fieldSize = 8,
-            defaultScale = 1f,
-            tileScale = 0.1f
+            minRectangleSize = 1,
+            tileSize = 51
         };
     }
 }

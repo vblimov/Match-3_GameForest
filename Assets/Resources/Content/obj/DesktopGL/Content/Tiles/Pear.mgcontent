@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/Tiles/Pear.png</SourceFile>
-  <SourceTime>2021-07-01T13:31:30.7140143+10:00</SourceTime>
-  <DestFile>D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/bin/DesktopGL/Content/Tiles/Pear.xnb</DestFile>
-  <DestTime>2021-07-01T13:34:28.8023891+10:00</DestTime>
+  <SourceFile>D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/Tiles/pear.png</SourceFile>
+  <SourceTime>2021-07-01T15:20:40.5253798+10:00</SourceTime>
+  <DestFile>D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/bin/DesktopGL/Content/Tiles/pear.xnb</DestFile>
+  <DestTime>2021-07-01T15:23:24.6121593+10:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2020-08-11T02:17:54+10:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

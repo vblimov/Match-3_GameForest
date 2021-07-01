@@ -2,6 +2,7 @@
 using UIComponents.ScreenComponents;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Resources;
 
 public class Match3Game : Game
 {
@@ -42,6 +43,7 @@ public class Match3Game : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
+        ResourcesLoader.Load(Content);
         _screenManager.AddScreen(new MainMenu(_screenManager));
         base.LoadContent();
     }

@@ -28,6 +28,7 @@ namespace UIComponents.GameComponents
         public override void Draw(GameTime gameTime, SpriteBatch _spriteBatch)
         {
             base.Draw(gameTime, _spriteBatch);
+            // _spriteBatch.Draw(_texture, Rectangle, componentColor);
             if (string.IsNullOrEmpty(_text)) return;
             var x = (Rectangle.X + (Rectangle.Width / 2)) - (_spriteFont.MeasureString(_text).X / 2);
             var y = (Rectangle.Y + (Rectangle.Height / 2)) - (_spriteFont.MeasureString(_text).Y / 2);

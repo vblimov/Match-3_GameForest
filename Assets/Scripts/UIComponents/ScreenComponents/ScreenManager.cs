@@ -8,6 +8,7 @@ namespace UIComponents.ScreenComponents
     {
         #region Fields
 
+        private static ScreenManager instance;
         private List<Screen> _screens = new List<Screen>();
         private List<Screen> _screensCopy = new List<Screen>();
         private bool isInitialized;
@@ -21,7 +22,10 @@ namespace UIComponents.ScreenComponents
         #endregion
 
         #region Methods
-
+        public static ScreenManager getInstance()
+        {
+            return instance ??= new ScreenManager(Match3Game.getInstance());
+        }
         public ScreenManager(Game game) : base(game)
         {
         }

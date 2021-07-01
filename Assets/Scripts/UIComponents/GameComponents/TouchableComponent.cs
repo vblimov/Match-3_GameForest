@@ -3,7 +3,6 @@ using GameParams;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-
 namespace UIComponents.GameComponents
 {
     public class TouchableComponent
@@ -28,27 +27,37 @@ namespace UIComponents.GameComponents
 
         public bool Clicked { get; private set; }
 
-        public Vector2 Position { get; set; }
+        protected Vector2 Position { get; set; }
 
-        public Rectangle Rectangle => new Rectangle((int) Position.X, (int) Position.Y, _texture.Width, _texture.Height);
+        protected Rectangle Rectangle => new Rectangle(
+            (int) Position.X,
+            (int) Position.Y,
+            _texture.Width,
+            _texture.Height);
 
         #endregion
 
         #region Methods
 
-        public TouchableComponent(Texture2D texture, Vector2 position)
+        protected TouchableComponent(Texture2D texture, Vector2 position)
         {
             _texture = texture;
             Position = position;
         }
 
+        protected TouchableComponent(Vector2 position)
+        {
+            Position = position;
+        }
 
-        public virtual void Draw(GameTime gameTime, SpriteBatch _spriteBatch)
+
+        public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             componentColor = _isHovering ? GameSettings._colors.pressedColor : GameSettings._colors.defaultColor;
-            _spriteBatch.Draw(_texture, Rectangle,componentColor);
+            spriteBatch.Draw(_texture, Rectangle, componentColor);
             Update(gameTime);
         }
+
         private void Update(GameTime gameTime)
         {
             _previousMouseState = _currentMouseState;
@@ -57,13 +66,12 @@ namespace UIComponents.GameComponents
             var mouseRectangle = new Rectangle(_currentMouseState.X, _currentMouseState.Y, 1, 1);
 
             _isHovering = false;
-            if (mouseRectangle.Intersects(Rectangle))
+            if (!mouseRectangle.Intersects(Rectangle)) return;
+            _isHovering = true;
+            if (_currentMouseState.LeftButton == ButtonState.Released &&
+                _previousMouseState.LeftButton == ButtonState.Pressed)
             {
-                _isHovering = true;
-                if (_currentMouseState.LeftButton == ButtonState.Released && _previousMouseState.LeftButton == ButtonState.Pressed)
-                {
-                    Click?.Invoke(this, EventArgs.Empty);
-                }
+                Click?.Invoke(this, EventArgs.Empty);
             }
         }
 
