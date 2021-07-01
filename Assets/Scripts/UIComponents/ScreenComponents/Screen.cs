@@ -2,13 +2,15 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace GameComponents
+namespace UIComponents.ScreenComponents
 {
     public class Screen
     {
         #region Fields
 
         protected readonly Color _backgroundColor = Color.CornflowerBlue;
+
+        public ScreenManager ScreenManager { get; internal set; }
 
         #endregion
 
@@ -34,6 +36,10 @@ namespace GameComponents
             
         }
 
+        public void ExitScreen()
+        {
+            ScreenManager.RemoveScreen(this);
+        }
         #endregion
     }
 }

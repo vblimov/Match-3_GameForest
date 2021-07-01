@@ -1,9 +1,10 @@
 ﻿using System;
+using GameParams;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace GameComponents
+namespace UIComponents.GameComponents
 {
     public class TouchableComponent
     {
@@ -17,7 +18,7 @@ namespace GameComponents
 
         private bool _isHovering = false;
 
-        protected Color componentColor = GameSettings.Colors.defaultColor;
+        protected Color componentColor = GameSettings._colors.defaultColor;
 
         #endregion
 
@@ -41,14 +42,14 @@ namespace GameComponents
             Position = position;
         }
 
+
         public virtual void Draw(GameTime gameTime, SpriteBatch _spriteBatch)
         {
-            componentColor = _isHovering ? GameSettings.Colors.pressedColor : GameSettings.Colors.defaultColor;
-            _spriteBatch.Draw(_texture, Rectangle, componentColor);
+            componentColor = _isHovering ? GameSettings._colors.pressedColor : GameSettings._colors.defaultColor;
+            _spriteBatch.Draw(_texture, Rectangle,componentColor);
             Update(gameTime);
         }
-
-        public virtual void Update(GameTime gameTime)
+        private void Update(GameTime gameTime)
         {
             _previousMouseState = _currentMouseState;
             _currentMouseState = Mouse.GetState();

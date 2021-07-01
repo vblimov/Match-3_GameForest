@@ -1,9 +1,10 @@
 ﻿using System;
+using GameParams;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace GameComponents
+namespace UIComponents.GameComponents
 {
     public class Button : TouchableComponent
     {
@@ -11,7 +12,7 @@ namespace GameComponents
 
         private readonly SpriteFont _spriteFont;
         private readonly string _text;
-        private readonly Color penColor = GameSettings.Colors.penColor;
+        private readonly Color penColor = GameSettings._colors.penColor;
         #endregion
 
         #region Methods
@@ -32,12 +33,6 @@ namespace GameComponents
             var y = (Rectangle.Y + (Rectangle.Height / 2)) - (_spriteFont.MeasureString(_text).Y / 2);
             _spriteBatch.DrawString(_spriteFont, _text, new Vector2(x, y), penColor);
         }
-
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-        }
-
         #endregion
     }
 }

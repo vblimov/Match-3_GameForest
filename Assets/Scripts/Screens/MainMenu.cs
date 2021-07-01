@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using GameComponents;
+using GameParams;
+using Match_3_GameForest.Screens;
+using UIComponents.ScreenComponents;
+using UIComponents.GameComponents;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -8,10 +11,9 @@ using Microsoft.Xna.Framework.Input;
     public class MainMenu : Screen
     {
         #region Fields
-
-        private ScreenManager _screenManager;
-        private Button _playButton;
+        
         private SpriteBatch _spriteBatch;
+        private List<TouchableComponent> buttons;
 
         #endregion
         
@@ -19,32 +21,38 @@ using Microsoft.Xna.Framework.Input;
 
         public MainMenu(ScreenManager screenManager)
         {
-            _screenManager = screenManager;
+            ScreenManager = screenManager;
         }
 
         public override void Load()
         {
-            _playButton = new Button(
-                _screenManager.Game.Content.Load<Texture2D>(GameSettings.Paths.buttonPath),
-                _screenManager.Game.Content.Load<SpriteFont>(GameSettings.Paths.fontPath),
+            var exitBut = new Button(
+                ScreenManager.Game.Content.Load<Texture2D>(GameSettings._paths.buttonPath),
+                ScreenManager.Game.Content.Load<SpriteFont>(GameSettings._paths.fontPath),
                 new Vector2(250, 250),
-                GameSettings.Names.playButtonText);
-            
+                GameSettings._names.playButtonText);
+            buttons = new List<TouchableComponent>()
+            {
+                exitBut
+            };
+            exitBut.Click += PlayGame;
             base.Load();
+        }
+
+        private void PlayGame(object sender, EventArgs e)
+        {
+            ScreenManager.AddScreen(new GamePlay(ScreenManager));
+            ExitScreen();
         }
 
         public override void Draw(GameTime gameTime)
         {
-            _spriteBatch = _screenManager.SpriteBatch;
+            _spriteBatch = ScreenManager.SpriteBatch;
             Console.Write(_spriteBatch);
             _spriteBatch.Begin();
-            _playButton.Draw(gameTime, _spriteBatch);
+            buttons.ForEach(button => button.Draw(gameTime, _spriteBatch));
             _spriteBatch.End();
             base.Draw(gameTime);
-        }
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
         }
         #endregion
     }

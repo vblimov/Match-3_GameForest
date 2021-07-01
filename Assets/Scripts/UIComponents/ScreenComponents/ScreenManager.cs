@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
-using System.Xml.Schema;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace GameComponents
+namespace UIComponents.ScreenComponents
 {
     public class ScreenManager : DrawableGameComponent
     {
         #region Fields
 
         private List<Screen> _screens = new List<Screen>();
-        private bool isInitialized = false;
+        private List<Screen> _screensCopy = new List<Screen>();
+        private bool isInitialized;
 
         #endregion
 
@@ -36,28 +36,48 @@ namespace GameComponents
         {
             SpriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _screens.ForEach(screen => screen.Load());
+            foreach (var screen in _screens)
+            {
+                screen.Load();
+            }
         }
 
         protected override void UnloadContent()
         {
-            _screens.ForEach(screen => screen.Unload());
+            foreach (var screen in _screens)
+            {
+                screen.Unload();
+            }
         }
 
         public override void Draw(GameTime gameTime)
         {
-            _screens.ForEach(screen => screen.Draw(gameTime));
+            _screensCopy.Clear();
+            _screens.ForEach(screen => _screensCopy.Add(screen));
+            foreach (var screen in _screensCopy)
+            {
+                screen.Draw(gameTime);
+            }
         }
 
         public override void Update(GameTime gameTime)
         {
-            _screens[0].Update(gameTime);
+            foreach (var screen in _screens)
+            {
+                screen.Update(gameTime);
+            }
         }
 
-        public void AddScreen(Screen newScreen)
+        public void AddScreen(Screen screen)
         {
-            _screens.Add(newScreen);
-            if (isInitialized) newScreen.Load();
+            _screens.Add(screen);
+            if (isInitialized) screen.Load();
+        }
+
+        public void RemoveScreen(Screen screen)
+        {
+            _screens.Remove(screen);
+            screen.Unload();
         }
 
         #endregion
