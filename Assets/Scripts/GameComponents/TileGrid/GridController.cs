@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using Match3.Enums;
 using Match3.GameParams;
@@ -8,6 +9,7 @@ using Match3.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
+using System.Linq.Expressions;
 
 namespace Match3.GameComponents.TileGrid
 {
@@ -27,10 +29,12 @@ namespace Match3.GameComponents.TileGrid
         #endregion
 
         #region Properties
+
         private TileType RandomTile =>
             (TileType) _random.Next(
                 Enum.GetValues(typeof(TileType)).GetLowerBound(0),
-                Enum.GetValues(typeof(TileType)).GetUpperBound(0) + 1);
+                Enum.GetValues(typeof(TileType)).GetUpperBound(0));
+
         #endregion
 
         #region Methods
@@ -43,6 +47,7 @@ namespace Match3.GameComponents.TileGrid
                 _gridSize,
                 _gridSize);
         }
+
         public void LoadContent(ContentManager Content)
         {
             for (var i = 0; i < _tiles.GetLength(0); i++)
@@ -53,6 +58,7 @@ namespace Match3.GameComponents.TileGrid
                 }
             }
         }
+
         public void Update(GameTime gameTime)
         {
             if (!InputHandler.CanInput) return;
@@ -99,6 +105,7 @@ namespace Match3.GameComponents.TileGrid
                 }
             }
         }
+
         private void SwapTiles(ref Tile previousSelectedTile, ref Tile currentSelectedTile, GameTime gameTime)
         {
             currentSelectedTile.IsSelected = false;
@@ -106,9 +113,15 @@ namespace Match3.GameComponents.TileGrid
             previousSelectedTile.MoveTile(currentSelectedTile.Position);
             currentSelectedTile.MoveTile(previousSelectedTile.Position);
             Swap(previousSelectedTile, currentSelectedTile);
+            if (CheckMatches())
+            {
+                ClearMatches();
+            }
+
             previousSelectedTile = null;
             currentSelectedTile = null;
         }
+
         private void SelectNewTile(ref Tile previousSelectedTile, ref Tile currentSelectedTile)
         {
             currentSelectedTile.IsSelected = true;
@@ -116,42 +129,112 @@ namespace Match3.GameComponents.TileGrid
             {
                 previousSelectedTile.IsSelected = false;
             }
+
             previousSelectedTile = null;
         }
+
         private void Swap(Tile tile1, Tile tile2)
         {
             _tiles[tile2.GridPosition.Column, tile2.GridPosition.Row] = tile1;
             _tiles[tile1.GridPosition.Column, tile1.GridPosition.Row] = tile2;
         }
 
-        private void CheckMatches()
+        private bool CheckMatches()
         {
+            var hasMatches = false;
+            //vertical
             for (var i = 0; i < _tiles.GetLength(0); i++)
             {
-                var tileInGroupCount = 0;
+                var matchTileCount = 0;
+                var currentTileGroup = TileType.None;
                 for (var j = 0; j < _tiles.GetLength(1); j++)
                 {
-                    if (j == 1)
+                    if (j == 0)
                     {
-                        tileInGroupCount++;
-                        continue;
+                        currentTileGroup = _tiles[i, j].TileType;
                     }
-
-                    if (_tiles[i, j - 1].TileType == _tiles[i, j].TileType)
+                    if (_tiles[i, j].TileType == currentTileGroup)
                     {
-                        tileInGroupCount++;
+                        matchTileCount++;
                     }
                     else
                     {
-                        for (var k = tileInGroupCount; k > 0; k--)
+                        if (matchTileCount >= 3)
                         {
-                            _tiles[i, k].CanMerged = true;
+                            hasMatches = true;
+                            MarkMatches(i, j, matchTileCount, true, false);
                         }
+                        currentTileGroup = _tiles[i, j].TileType;
+                        matchTileCount = 1;
                     }
-                    
+                    if (j == _tiles.GetLength(0) - 1 && matchTileCount >= 3)
+                    {
+                        hasMatches = true;
+                        MarkMatches(i, j, matchTileCount, true, true);
+                    }
+                }
+            }
+            //horizontal
+            for (var i = 0; i < _tiles.GetLength(0); i++)
+            {
+                var matchTileCount = 0;
+                var currentTileGroup = TileType.None;
+                for (var j = 0; j < _tiles.GetLength(1); j++)
+                {
+                    if (j == 0)
+                    {
+                        currentTileGroup = _tiles[j, i].TileType;
+                    }
+                    if (_tiles[j, i].TileType == currentTileGroup)
+                    {
+                        matchTileCount++;
+                    }
+                    else
+                    {
+                        if (matchTileCount >= 3)
+                        {
+                            hasMatches = true;
+                            MarkMatches(j, i, matchTileCount, false, false);
+                        }
+                        currentTileGroup = _tiles[j, i].TileType;
+                        matchTileCount = 1;
+                    }
+                    if (j == _tiles.GetLength(0) - 1 && matchTileCount >= 3)
+                    {
+                        hasMatches = true;
+                        MarkMatches(j, i, matchTileCount, false, true);
+                    }
+                }
+            }
+            return hasMatches;
+        }
+
+        private void MarkMatches(int i, int j, int count, bool isVertical, bool isLastInLine)
+        {
+            var lineOffset = isLastInLine ? 1 : 0;
+            var lineOffsetForLastLine = isLastInLine ? 0 : 1;
+            for (var k = lineOffset; k <= count - lineOffsetForLastLine; k++)
+            {
+                var column = isVertical ? i : (i - count + k);
+                var row = isVertical ? (j - count + k) : j;
+                _tiles[column,row].CanMatch = true;
+            }
+        }
+
+        private void ClearMatches()
+        {
+            for (var i = 0; i < _tiles.GetLength(0); i++)
+            {
+                for (var j = 0; j < _tiles.GetLength(1); j++)
+                {
+                    if (_tiles[i, j].CanMatch)
+                    {
+                        _tiles[i, j].Destroy();
+                    }
                 }
             }
         }
+
         #endregion
     }
 }

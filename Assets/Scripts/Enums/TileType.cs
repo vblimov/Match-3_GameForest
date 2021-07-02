@@ -9,7 +9,9 @@ namespace Match3.Enums
         Apple,
         Cherry,
         Lemon,
-        Pear
+        Pear,
+        Coconut,
+        None
     }
 
     public static class TileTypeExtension
@@ -22,6 +24,8 @@ namespace Match3.Enums
                 TileType.Cherry => GameSettings._paths.cherryTilePath,
                 TileType.Lemon => GameSettings._paths.lemonTilePath,
                 TileType.Pear => GameSettings._paths.pearTilePath,
+                TileType.Coconut => GameSettings._paths.coconutTilePath,
+                TileType.None => GameSettings._paths.tilePath,
                 _ => throw new ArgumentOutOfRangeException(nameof(tileType), tileType, null)
             };
         }

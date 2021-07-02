@@ -34,7 +34,7 @@ namespace Match3.GameComponents.TileGrid
         #endregion
 
         #region Properties
-        public bool CanMerged { get; set; }
+        public bool CanMatch { get; set; }
         public TileType TileType { get; private set; }
         public bool IsSelected { get; set; }
         public Vector2 Position { get; private set; }

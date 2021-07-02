@@ -33,6 +33,7 @@ namespace Match3.GameParams
             public string lemonTilePath;
             public string pearTilePath;
             public string cherryTilePath;
+            public string coconutTilePath;
         }
         public static SPaths _paths = new SPaths()
         {
@@ -44,6 +45,7 @@ namespace Match3.GameParams
             lemonTilePath = "Tiles" + "/" + "Lemon",
             pearTilePath = "Tiles" + "/" + "Pear",
             cherryTilePath = "Tiles" + "/" + "Cherry",
+            coconutTilePath = "Tiles" + "/" + "coconut",
         };
 
         public struct SNames
