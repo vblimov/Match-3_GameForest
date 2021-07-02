@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace UIComponents.ScreenComponents
+namespace Match3.GameComponents.UIComponents.ScreenComponents
 {
     public class ScreenManager : DrawableGameComponent
     {

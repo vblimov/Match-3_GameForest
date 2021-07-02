@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using GameParams;
-using Match_3_GameForest.Screens;
-using UIComponents.ScreenComponents;
-using UIComponents.GameComponents;
+using Match3.GameParams;
+using Match3.GameComponents.UIComponents.Screens;
+using Match3.GameComponents.UIComponents.ScreenComponents;
+using Match3.GameComponents.UIComponents.Touchable;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Resources;
+using Match3.Resources;
 
-public class MainMenu : Screen
+namespace Match3.GameComponents.UIComponents.Screens
+{
+    public class MainMenu : Screen
     {
         #region Fields
         
@@ -30,7 +32,7 @@ public class MainMenu : Screen
             var exitBut = new Button(
                 ResourcesLoader.Button,
                 ResourcesLoader.Font,
-                new Vector2(250, 250),
+                new Vector2(550, 250),
                 GameSettings._names.playButtonText);
             buttons = new List<TouchableComponent>()
             {
@@ -57,3 +59,4 @@ public class MainMenu : Screen
         }
         #endregion
     }
+}

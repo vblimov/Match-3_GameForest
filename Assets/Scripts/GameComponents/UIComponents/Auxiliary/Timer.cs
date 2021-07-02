@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
 
-namespace UIComponents
+namespace Match3.GameComponents.UIComponents.Auxiliary
 {
     public static class Timer
     {
@@ -19,7 +19,7 @@ namespace UIComponents
 
         #region Properties
 
-        public static string _timeRemainingFormatted => 
+        public static string TimeRemainingFormatted => 
             $"Time Remaining: {Math.Round(_timeRemaining, MidpointRounding.ToZero)}";
 
         #endregion

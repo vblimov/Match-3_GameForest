@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace GameParams
+namespace Match3.GameParams
 {
     public static class GameSettings
     {
@@ -8,14 +8,18 @@ namespace GameParams
         {
             public Color backgroundColor;
             public Color defaultColor;
+            public Color hoveredColor;
             public Color pressedColor;
+            public Color selectedColor;
             public Color penColor;
         }
         public static SColors _colors = new SColors()
         {
             backgroundColor = Color.CornflowerBlue,
             defaultColor = Color.White,
+            hoveredColor = Color.LightGray,
             pressedColor = Color.Gray,
+            selectedColor = Color.IndianRed,
             penColor = Color.Black
         };
 
@@ -59,12 +63,24 @@ namespace GameParams
             public int minRectangleSize;
             public int tileSize;
         }
-
         public static SConstants _constants = new SConstants()
         {
             fieldSize = 8,
             minRectangleSize = 1,
             tileSize = 51
+        };
+
+        public struct SPositions
+        {
+            public Vector2 scorePosition;
+            public Vector2 timerPosition;
+            public Vector2 gridPosition;
+        }
+        public static SPositions _positions = new SPositions()
+        {
+            gridPosition = new Vector2(0,0),
+            scorePosition = new Vector2(500, 25),
+            timerPosition = new Vector2(500, 55)
         };
     }
 }

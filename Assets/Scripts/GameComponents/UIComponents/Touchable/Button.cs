@@ -1,10 +1,10 @@
 ﻿using System;
-using GameParams;
+using Match3.GameParams;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace UIComponents.GameComponents
+namespace Match3.GameComponents.UIComponents.Touchable
 {
     public class Button : TouchableComponent
     {

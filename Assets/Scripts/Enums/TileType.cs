@@ -1,8 +1,8 @@
 ﻿using System;
-using GameParams;
+using Match3.GameParams;
 using Microsoft.Xna.Framework;
 
-namespace Enums
+namespace Match3.Enums
 {
     public enum TileType
     {

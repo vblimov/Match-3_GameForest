@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using Enums;
-using GameParams;
+﻿using Match3.GameParams;
+using Match3.Resources;
+using Match3.GameComponents.UIComponents.Auxiliary;
+using Match3.GameComponents.TileGrid;
+using Match3.GameComponents.UIComponents.ScreenComponents;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Resources;
-using UIComponents;
-using UIComponents.GameComponents;
-using UIComponents.GameComponents.TileGrid;
-using UIComponents.ScreenComponents;
 
-namespace Match_3_GameForest.Screens
+namespace Match3.GameComponents.UIComponents.Screens
 {
     public class GamePlay : Screen
     {
         #region Fields
-        
+
         private SpriteBatch _spriteBatch;
         private Grid _grid = new Grid();
 
@@ -34,11 +30,12 @@ namespace Match_3_GameForest.Screens
             content = ScreenManager.Game.Content;
             _grid.LoadContent(content);
         }
-        
+
         public override void Load()
         {
             Timer.Reset();
-            Timer.AddListener(() => {ScreenManager.Game.Exit();});
+            Timer.AddListener(() => { ScreenManager.Game.Exit(); });
+            Score.Reset();
             base.Load();
         }
 
@@ -46,11 +43,10 @@ namespace Match_3_GameForest.Screens
         {
             _spriteBatch.Begin();
             _grid.Draw(gameTime, _spriteBatch);
-            _spriteBatch.DrawString(
-                ResourcesLoader.Font, 
-                Timer._timeRemainingFormatted, 
-                new Vector2(500, 25),
-                GameSettings._colors.penColor);
+            _spriteBatch.DrawString(ResourcesLoader.Font, Timer.TimeRemainingFormatted,
+                GameSettings._positions.timerPosition, GameSettings._colors.penColor);
+            _spriteBatch.DrawString(ResourcesLoader.Font, Score.ScoreFormatted, 
+                GameSettings._positions.scorePosition, GameSettings._colors.penColor);
             _spriteBatch.End();
             base.Draw(gameTime);
         }
@@ -58,7 +54,9 @@ namespace Match_3_GameForest.Screens
         public override void Update(GameTime gameTime)
         {
             Timer.Update(gameTime);
+            _grid.Update(gameTime);
         }
+
         #endregion
     }
 }

@@ -1,9 +1,9 @@
 ﻿using System;
-using GameParams;
+using Match3.GameParams;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-namespace UIComponents.GameComponents
+namespace Match3.GameComponents.UIComponents.Touchable
 {
     public class TouchableComponent
     {
@@ -53,12 +53,12 @@ namespace UIComponents.GameComponents
 
         public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            componentColor = _isHovering ? GameSettings._colors.pressedColor : GameSettings._colors.defaultColor;
+            componentColor = _isHovering ? GameSettings._colors.hoveredColor : GameSettings._colors.defaultColor;
             spriteBatch.Draw(_texture, Rectangle, componentColor);
             Update(gameTime);
         }
 
-        private void Update(GameTime gameTime)
+        protected virtual void Update(GameTime gameTime)
         {
             _previousMouseState = _currentMouseState;
             _currentMouseState = Mouse.GetState();

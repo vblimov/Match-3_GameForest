@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Match_3_GameForest
+namespace Match3
 {
     public static class Program
     {
