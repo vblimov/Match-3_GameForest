@@ -2,7 +2,10 @@
 {
     public enum GameState
     {
-        WaitingInput,
-        Animating
+        UserInput,
+        Swiping,
+        Matching,
+        Falling,
+        Filling,
     }
 }

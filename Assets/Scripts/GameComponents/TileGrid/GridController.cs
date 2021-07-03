@@ -361,7 +361,11 @@ namespace Match3.GameComponents.TileGrid
                     _tiles[i, j] = new Tile(new Vector2(i, j), RandomTile);
                 }
             }
+
+            GameStatesHandler.Change += UpdateGameState;
         }
+
+        
 
         public void Update(GameTime gameTime)
         {
@@ -369,12 +373,40 @@ namespace Match3.GameComponents.TileGrid
             _previousMouseState = _currentMouseState;
             _currentMouseState = Mouse.GetState();
 
-            var mouseRectangle = new Rectangle(_currentMouseState.X, _currentMouseState.Y, 1, 1);
+            var mouseRectangle = new Rectangle(
+                _currentMouseState.X, 
+                _currentMouseState.Y, 
+                GameSettings._constants.minRectangleSize, 
+                GameSettings._constants.minRectangleSize);
 
             if (mouseRectangle.Intersects(_gridRectangle) && _currentMouseState.LeftButton == ButtonState.Released &&
                 _previousMouseState.LeftButton == ButtonState.Pressed)
             {
                 SelectTouchedTile(_currentMouseState.X, _currentMouseState.Y, gameTime);
+            }
+        }
+        private void UpdateGameState(GameState state)
+        {
+            switch (state)
+            {
+                case GameState.UserInput:
+                    InputHandler.AllowInput();
+                    break;
+                case GameState.Swiping:
+                    InputHandler.DenyInput();
+                    // SwapTiles();
+                    break;
+                case GameState.Matching:
+                    CheckMatches();
+                    break;
+                case GameState.Falling:
+                    FallTiles();
+                    break;
+                case GameState.Filling:
+                    FillTiles();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(state), state, null);
             }
         }
 
@@ -399,9 +431,8 @@ namespace Match3.GameComponents.TileGrid
                 if (_previousSelectedTile != null &&
                     Utility.MathHelper.IsStandingNear(_previousSelectedTile, _currentSelectedTile))
                 {
-                    InputHandler.DenyInput();
-                    SwapTiles(_previousSelectedTile, _currentSelectedTile, gameTime);
-                    InputHandler.AllowInput();
+                    // GameStatesHandler.GameState = GameState.Swiping;
+                    SwapTiles(_previousSelectedTile, _currentSelectedTile);
                 }
                 else
                 {
@@ -410,27 +441,42 @@ namespace Match3.GameComponents.TileGrid
             }
         }
 
-        private async void SwapTiles(Tile previousSelectedTile, Tile currentSelectedTile, GameTime gameTime)
+        private async void SwapTiles(Tile previousSelectedTile, Tile currentSelectedTile)
         {
             currentSelectedTile.IsSelected = false;
             previousSelectedTile.IsSelected = false;
 
-            Swap(previousSelectedTile, currentSelectedTile);
-            if (CheckMatches())
-            {
-                SwapTilesPositions(previousSelectedTile, currentSelectedTile, false);
-                ClearMatches();
-            }
-            else
-            {
-                SwapTilesPositions(previousSelectedTile, currentSelectedTile, true);
-            }
+            SwapTilesPositions(previousSelectedTile, currentSelectedTile, true);
+            await Task.Delay(1000);
+            Swap(_previousSelectedTile, _currentSelectedTile);
+            // Swap(_currentSelectedTile, _previousSelectedTile);
+            // if (CheckMatches())
+            // {
+            //     SwapTilesPositions(previousSelectedTile, currentSelectedTile, false);
+            //     // ClearMatches();
+            // }
+            // else
+            // {
+            //     SwapTilesPositions(previousSelectedTile, currentSelectedTile, true);
+            //     Swap(currentSelectedTile, previousSelectedTile);
+            // }
             _previousSelectedTile = null;
             _currentSelectedTile = null;
-            await Task.Delay(1000);
-            FallTiles();
+            // await Task.Delay(1000);
+            // FallTiles();
+            // await Task.Delay(1000);
+            // FillTiles();
         }
-
+        private void FillTiles()
+        {
+            for (var x = 0; x < _tiles.GetLength(0); x++)
+            {
+                for (var y = 0; y < _tiles.GetLength(1); y++)
+                {
+                    _tiles[x, y] ??= new Tile(new Vector2(x, y), RandomTile);
+                }
+            }
+        }
         private bool CheckMatches()
         {
             var hasMatches = false;
@@ -508,7 +554,6 @@ namespace Match3.GameComponents.TileGrid
 
             return hasMatches;
         }
-
         private void MarkMatches(int x, int y, int count, bool isVertical, bool isLastInLine)
         {
             var lineOffset = isLastInLine ? 1 : 0;
@@ -520,7 +565,6 @@ namespace Match3.GameComponents.TileGrid
                 _tiles[column, row].CanMatch = true;
             }
         }
-
         private void ClearMatches()
         {
             for (var x = 0; x < _tiles.GetLength(0); x++)
@@ -529,40 +573,32 @@ namespace Match3.GameComponents.TileGrid
                 {
                     if (_tiles[x, y].CanMatch)
                     {
-                        _tiles[x, y].Destroy();
+                        _tiles[x, y] = null;
                     }
                 }
             }
         }
-
         private void FallTiles()
         {
             for (var x = 0; x < _tiles.GetLength(0); x++)
             {
                 var verticalHolesCount = 0;
-                var startHole = 0;
                 for (var y = _tiles.GetLength(1) - 1; y >= 0; y--)
                 {
-                    if (_tiles[x, y].TileType == TileType.None)
+                    if (_tiles[x, y] == null)
                     {
                         verticalHolesCount++;
-                        if (verticalHolesCount == 1)
-                        {
-                            startHole = y;
-                        }
                     }
-                    else if (_tiles[x, y].TileType != TileType.None && verticalHolesCount > 0)
+                    else if (verticalHolesCount != 0)
                     {
-                        Swap(_tiles[x, y], _tiles[x, startHole]);
-                        SwapTilesPositions(_tiles[x, y], _tiles[x, startHole], false);
-                        startHole--;
+                        _tiles[x, y + verticalHolesCount] = _tiles[x, y];
+                        _tiles[x, y + verticalHolesCount].MoveTile(
+                            new Vector2(
+                                _tiles[x, y].Position.X, 
+                                _tiles[x, y].Position.Y + verticalHolesCount * GameSettings._constants.tileSize),
+                            false);
+                        _tiles[x, y] = null;
                     }
-
-                    // while (y == 0 && verticalHolesCount - startHole != verticalHolesCount)
-                    // {
-                    //     startHole--;
-                    //     _tiles[x, startHole] = new Tile((x, startHole), TileType.None);
-                    // }
                 }
             }
         }
@@ -580,15 +616,15 @@ namespace Match3.GameComponents.TileGrid
 
         private void Swap(Tile tile1, Tile tile2)
         {
-            _tiles[tile2.GridPosition.Column, tile2.GridPosition.Row] = tile1;
+            var temp = tile1;
             _tiles[tile1.GridPosition.Column, tile1.GridPosition.Row] = tile2;
+            _tiles[tile2.GridPosition.Column, tile2.GridPosition.Row] = temp;
         }
 
         private void SwapTilesPositions(Tile previousSelectedTile, Tile currentSelectedTile, bool isRollBack)
         {
             previousSelectedTile.MoveTile(currentSelectedTile.Position, isRollBack);
             currentSelectedTile.MoveTile(previousSelectedTile.Position, isRollBack);
-            //TODO когда пытаются обратиться к плитке, которая уже движется - выпадает ошибка, надо нчинать новое движение плитки только после того, как старое завершится
         }
 
         #endregion

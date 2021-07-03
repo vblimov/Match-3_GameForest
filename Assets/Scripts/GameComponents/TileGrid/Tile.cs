@@ -33,10 +33,8 @@ namespace Match3.GameComponents.TileGrid
         #region Properties
         public bool CanMatch { get; set; }
         public TileType TileType { get; private set; }
-        public Vector2 NextPosition => _nextPosition;
         public bool IsSelected { get; set; }
         public Vector2 Position { get; private set; }
-
         public (int Column, int Row) GridPosition =>
         (
             (int) Position.X / GameSettings._constants.tileSize,
@@ -89,7 +87,6 @@ namespace Match3.GameComponents.TileGrid
 
         public void MoveTile(Vector2 nextPosition, bool isRollBack)
         {
-            InputHandler.DenyInput();
             _nextPosition = nextPosition;
             if (isRollBack)
             {
@@ -97,11 +94,6 @@ namespace Match3.GameComponents.TileGrid
             }
             _state = isRollBack ? TileState.MoveRollBackForward : TileState.Move;
         }
-        public void MoveTileInstantly(Vector2 nextPosition)
-        {
-            Position = nextPosition;
-        }
-
         private void Move(GameTime gameTime, TileState tileState)
         {
             if(tileState == TileState.Stay) return;
@@ -123,8 +115,6 @@ namespace Match3.GameComponents.TileGrid
                 else
                 {
                     _state = TileState.Stay;
-                    _nextPosition = new Vector2(); 
-                    InputHandler.AllowInput();
                 }
             }
         }

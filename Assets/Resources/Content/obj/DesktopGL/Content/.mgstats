@@ -1,7 +1,1 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
-"D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/Tiles/apple.png","D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/bin/DesktopGL/Content/Tiles/apple.xnb","TextureProcessor","Texture2DContent",3594,10085,0,1390193
-"D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/Tiles/cherry.png","D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/bin/DesktopGL/Content/Tiles/cherry.xnb","TextureProcessor","Texture2DContent",4427,10085,0,0021609
-"D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/Tiles/coconut.png","D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/bin/DesktopGL/Content/Tiles/coconut.xnb","TextureProcessor","Texture2DContent",3671,10085,0,0017107
-"D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/Tiles/grid.png","D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/bin/DesktopGL/Content/Tiles/grid.xnb","TextureProcessor","Texture2DContent",2346,1000085,0,0489453
-"D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/Tiles/lemon.png","D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/bin/DesktopGL/Content/Tiles/lemon.xnb","TextureProcessor","Texture2DContent",3168,10085,0,0024858
-"D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/Tiles/pear.png","D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/bin/DesktopGL/Content/Tiles/pear.xnb","TextureProcessor","Texture2DContent",3498,10085,0,0020097
