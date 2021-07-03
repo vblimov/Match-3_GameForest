@@ -7,7 +7,7 @@ namespace Match3.Utility
 {
     public static class MathHelper
     {
-        public const float FLOAT_TOLERANCE = 0.1f;
+        public const float FLOAT_TOLERANCE = 1f;
         public const int GRID_TOLERANCE = 5;
         public static Rectangle GetRectangle(Vector2 position, int width, int height)
         {

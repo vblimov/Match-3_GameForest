@@ -36,7 +36,7 @@ namespace Match3.GameComponents.TileGrid
             {
                 for (var j = 0; j < _gridController._tiles.GetLength(1); j++)
                 {
-                    _gridController._tiles[i, j].Draw(gameTime, spriteBatch);
+                    _gridController._tiles[i, j]?.Draw(gameTime, spriteBatch);
                 }
             }
         }

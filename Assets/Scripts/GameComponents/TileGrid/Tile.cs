@@ -8,16 +8,12 @@ using Microsoft.Xna.Framework.Graphics;
 using Match3.Resources;
 using Match3.GameComponents.UIComponents.Touchable;
 using Match3.GameComponents.UIComponents.ScreenComponents;
+using Match3.Utility;
 using Microsoft.Xna.Framework.Input;
 using MathHelper = Microsoft.Xna.Framework.MathHelper;
 
 namespace Match3.GameComponents.TileGrid
 {
-    enum TileState
-    {
-        Move,
-        Stay
-    }
     public class Tile
     {
         #region Fields
@@ -27,15 +23,17 @@ namespace Match3.GameComponents.TileGrid
         private Texture2D _texture;
         private Color componentColor = GameSettings._colors.defaultColor;
         private bool _isHovering;
+        private Vector2 _previousPosition = new Vector2();
         private Vector2 _nextPosition = new Vector2();
-        private TileState _state = TileState.Stay;
-        private const float lerpSpeed = 6f;
+        public TileState _state = TileState.Stay;
+        private const float lerpSpeed = 0.1f;
 
         #endregion
 
         #region Properties
         public bool CanMatch { get; set; }
         public TileType TileType { get; private set; }
+        public Vector2 NextPosition => _nextPosition;
         public bool IsSelected { get; set; }
         public Vector2 Position { get; private set; }
 
@@ -55,16 +53,15 @@ namespace Match3.GameComponents.TileGrid
 
         #region Methods
 
-        public Tile(Vector2 position, TileType tileType)
+        public Tile(Vector2 gridPosition, TileType tileType)
         {
             Position = new Vector2(
-                position.X * GameSettings._constants.tileSize,
-                position.Y * GameSettings._constants.tileSize
+                gridPosition.X * GameSettings._constants.tileSize,
+                gridPosition.Y * GameSettings._constants.tileSize
             );
             ResourcesLoader.Tiles.TryGetValue(tileType, out _texture);
             TileType = tileType;
         }
-
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             componentColor =
@@ -83,40 +80,59 @@ namespace Match3.GameComponents.TileGrid
             _currentMouseState = Mouse.GetState();
 
             var mouseRectangle = new Rectangle(_currentMouseState.X, _currentMouseState.Y, 1, 1);
-            if (_state == TileState.Move)
-            {
-                Move(gameTime);
-            }
+            Move(gameTime, _state);
             _isHovering = false;
             if (!mouseRectangle.Intersects(Rectangle)) return;
             if (IsSelected) return;
             _isHovering = true;
         }
 
-        public void MoveTile(Vector2 nextPosition)
+        public void MoveTile(Vector2 nextPosition, bool isRollBack)
         {
+            InputHandler.DenyInput();
             _nextPosition = nextPosition;
-            _state = TileState.Move;
+            if (isRollBack)
+            {
+                _previousPosition = Position;
+            }
+            _state = isRollBack ? TileState.MoveRollBackForward : TileState.Move;
+        }
+        public void MoveTileInstantly(Vector2 nextPosition)
+        {
+            Position = nextPosition;
         }
 
-        private void Move(GameTime gameTime)
+        private void Move(GameTime gameTime, TileState tileState)
         {
+            if(tileState == TileState.Stay) return;
             var newPosition = new Vector2(
-                MathHelper.Lerp(Position.X, _nextPosition.X, lerpSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds),
-                MathHelper.Lerp(Position.Y, _nextPosition.Y, lerpSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds)
+                MathHelper.Lerp(Position.X, _nextPosition.X, lerpSpeed),
+                MathHelper.Lerp(Position.Y, _nextPosition.Y, lerpSpeed)
             );
             var distance = Math.Abs(Vector2.Distance(newPosition, Position));
             Position = newPosition;
             
-            if (!(distance < Utility.MathHelper.FLOAT_TOLERANCE)) return;
-            _state = TileState.Stay;
-            Position = _nextPosition;
-            _nextPosition = new Vector2();
+            if (distance < Utility.MathHelper.FLOAT_TOLERANCE)
+            {
+                Position = _nextPosition;
+                if (tileState == TileState.MoveRollBackForward)
+                {
+                    _nextPosition = _previousPosition;
+                    _state = TileState.MoveRollBackBackward;
+                }
+                else
+                {
+                    _state = TileState.Stay;
+                    _nextPosition = new Vector2(); 
+                    InputHandler.AllowInput();
+                }
+            }
         }
 
         public void Destroy()
         {
             _texture = ResourcesLoader.Tile;
+            TileType = TileType.None;
         }
         #endregion
     }

@@ -8,12 +8,14 @@
     <File>D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/Tiles/apple.png</File>
     <File>D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/Tiles/cherry.png</File>
     <File>D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/Tiles/coconut.png</File>
+    <File>D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/Tiles/grid.png</File>
     <File>D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/Tiles/lemon.png</File>
     <File>D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/Tiles/pear.png</File>
     <File>D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/Tiles/tile.png</File>
     <File>D:/Code/Repos/Match-3_GameForest/Assets/Resources/Content/UI/button.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

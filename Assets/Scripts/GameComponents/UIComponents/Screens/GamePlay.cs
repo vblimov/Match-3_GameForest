@@ -34,7 +34,7 @@ namespace Match3.GameComponents.UIComponents.Screens
         public override void Load()
         {
             Timer.Reset();
-            Timer.AddListener(() => { ScreenManager.Game.Exit(); });
+            // Timer.AddListener(() => { ScreenManager.Game.Exit(); });
             Score.Reset();
             base.Load();
         }
