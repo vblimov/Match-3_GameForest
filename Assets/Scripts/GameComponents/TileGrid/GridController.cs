@@ -1,4 +1,5 @@
-﻿// using System;
+﻿#region MyRegion
+// using System;
 // using System.Collections.Generic;
 // using System.Data;
 // using System.Linq;
@@ -299,7 +300,7 @@
 //         #endregion
 //     }
 // }
-
+#endregion
 
 using System;
 using System.Collections.Generic;
@@ -328,7 +329,6 @@ namespace Match3.GameComponents.TileGrid
         private readonly Random _random = new Random();
         private Tile _currentSelectedTile = null;
         private Tile _previousSelectedTile = null;
-        private bool _canStartMatch = false;
 
         #endregion
 
@@ -352,20 +352,19 @@ namespace Match3.GameComponents.TileGrid
                 _gridSize);
         }
 
-        public void LoadContent(ContentManager Content)
+        public async  void LoadContent(ContentManager Content)
         {
-            for (var i = 0; i < _tiles.GetLength(0); i++)
-            {
-                for (var j = 0; j < _tiles.GetLength(1); j++)
-                {
-                    _tiles[i, j] = new Tile(new Vector2(i, j), RandomTile);
-                }
-            }
-
+            FillTiles();
+            // do
+            // {
+            //     ClearMatches();
+            //     await Task.Delay(500);
+            //     FallTiles();
+            //     await Task.Delay(500);
+            //     FillTiles();
+            // } while (CheckMatches());
             GameStatesHandler.Change += UpdateGameState;
         }
-
-        
 
         public void Update(GameTime gameTime)
         {
@@ -374,9 +373,9 @@ namespace Match3.GameComponents.TileGrid
             _currentMouseState = Mouse.GetState();
 
             var mouseRectangle = new Rectangle(
-                _currentMouseState.X, 
-                _currentMouseState.Y, 
-                GameSettings._constants.minRectangleSize, 
+                _currentMouseState.X,
+                _currentMouseState.Y,
+                GameSettings._constants.minRectangleSize,
                 GameSettings._constants.minRectangleSize);
 
             if (mouseRectangle.Intersects(_gridRectangle) && _currentMouseState.LeftButton == ButtonState.Released &&
@@ -385,6 +384,7 @@ namespace Match3.GameComponents.TileGrid
                 SelectTouchedTile(_currentMouseState.X, _currentMouseState.Y, gameTime);
             }
         }
+
         private void UpdateGameState(GameState state)
         {
             switch (state)
@@ -443,40 +443,45 @@ namespace Match3.GameComponents.TileGrid
 
         private async void SwapTiles(Tile previousSelectedTile, Tile currentSelectedTile)
         {
-            currentSelectedTile.IsSelected = false;
-            previousSelectedTile.IsSelected = false;
+            _currentSelectedTile.IsSelected = false;
+            _previousSelectedTile.IsSelected = false;
 
-            SwapTilesPositions(previousSelectedTile, currentSelectedTile, true);
-            await Task.Delay(1000);
-            Swap(_previousSelectedTile, _currentSelectedTile);
-            // Swap(_currentSelectedTile, _previousSelectedTile);
-            // if (CheckMatches())
-            // {
-            //     SwapTilesPositions(previousSelectedTile, currentSelectedTile, false);
-            //     // ClearMatches();
-            // }
-            // else
-            // {
-            //     SwapTilesPositions(previousSelectedTile, currentSelectedTile, true);
-            //     Swap(currentSelectedTile, previousSelectedTile);
-            // }
+            Swap(_previousSelectedTile, _currentSelectedTile, false);
+            // SwapTilesPositions(_previousSelectedTile, _currentSelectedTile, true);
+
+            if (CheckMatches())
+            {
+                SwapTilesPositions(_previousSelectedTile, _currentSelectedTile, false);
+            }
+            else
+            {
+                SwapTilesPositions(_previousSelectedTile, _currentSelectedTile, true);
+                Swap(_previousSelectedTile, _currentSelectedTile, true);
+            }
             _previousSelectedTile = null;
             _currentSelectedTile = null;
-            // await Task.Delay(1000);
-            // FallTiles();
-            // await Task.Delay(1000);
-            // FillTiles();
+            do
+            {
+                ClearMatches();
+                await Task.Delay(1000);
+                FallTiles();
+                await Task.Delay(1000);
+                FillTiles();
+            } while (CheckMatches());
+
         }
+
         private void FillTiles()
         {
             for (var x = 0; x < _tiles.GetLength(0); x++)
             {
                 for (var y = 0; y < _tiles.GetLength(1); y++)
                 {
-                    _tiles[x, y] ??= new Tile(new Vector2(x, y), RandomTile);
+                    _tiles[x, y] ??= new Tile((x, y), RandomTile);
                 }
             }
         }
+
         private bool CheckMatches()
         {
             var hasMatches = false;
@@ -554,6 +559,7 @@ namespace Match3.GameComponents.TileGrid
 
             return hasMatches;
         }
+
         private void MarkMatches(int x, int y, int count, bool isVertical, bool isLastInLine)
         {
             var lineOffset = isLastInLine ? 1 : 0;
@@ -565,6 +571,7 @@ namespace Match3.GameComponents.TileGrid
                 _tiles[column, row].CanMatch = true;
             }
         }
+
         private void ClearMatches()
         {
             for (var x = 0; x < _tiles.GetLength(0); x++)
@@ -578,6 +585,7 @@ namespace Match3.GameComponents.TileGrid
                 }
             }
         }
+
         private void FallTiles()
         {
             for (var x = 0; x < _tiles.GetLength(0); x++)
@@ -594,7 +602,7 @@ namespace Match3.GameComponents.TileGrid
                         _tiles[x, y + verticalHolesCount] = _tiles[x, y];
                         _tiles[x, y + verticalHolesCount].MoveTile(
                             new Vector2(
-                                _tiles[x, y].Position.X, 
+                                _tiles[x, y].Position.X,
                                 _tiles[x, y].Position.Y + verticalHolesCount * GameSettings._constants.tileSize),
                             false);
                         _tiles[x, y] = null;
@@ -614,11 +622,10 @@ namespace Match3.GameComponents.TileGrid
             previousSelectedTile = null;
         }
 
-        private void Swap(Tile tile1, Tile tile2)
+        private void Swap(Tile tile1, Tile tile2, bool isRollBack)
         {
-            var temp = tile1;
-            _tiles[tile1.GridPosition.Column, tile1.GridPosition.Row] = tile2;
-            _tiles[tile2.GridPosition.Column, tile2.GridPosition.Row] = temp;
+            _tiles[tile1.GridPosition.Column, tile1.GridPosition.Row] = isRollBack? tile1 : tile2;
+            _tiles[tile2.GridPosition.Column, tile2.GridPosition.Row] = isRollBack? tile2 : tile1;
         }
 
         private void SwapTilesPositions(Tile previousSelectedTile, Tile currentSelectedTile, bool isRollBack)

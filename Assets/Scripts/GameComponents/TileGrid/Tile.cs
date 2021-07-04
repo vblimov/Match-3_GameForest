@@ -51,14 +51,24 @@ namespace Match3.GameComponents.TileGrid
 
         #region Methods
 
-        public Tile(Vector2 gridPosition, TileType tileType)
+        public Tile((int column, int row) gridPosition, TileType tileType)
         {
             Position = new Vector2(
-                gridPosition.X * GameSettings._constants.tileSize,
-                gridPosition.Y * GameSettings._constants.tileSize
+                gridPosition.column * GameSettings._constants.tileSize,
+                gridPosition.row * GameSettings._constants.tileSize
             );
             ResourcesLoader.Tiles.TryGetValue(tileType, out _texture);
             TileType = tileType;
+        }
+        public Tile(Tile tile)
+        {
+            Position = new Vector2(
+                tile.GridPosition.Column * GameSettings._constants.tileSize,
+                tile.GridPosition.Row * GameSettings._constants.tileSize
+            );
+            // GridPosition = tile.GridPosition;
+            ResourcesLoader.Tiles.TryGetValue(tile.TileType, out _texture);
+            TileType = tile.TileType;
         }
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
