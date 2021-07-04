@@ -9,7 +9,7 @@ namespace Match3.GameParams
             public Color backgroundColor;
             public Color defaultColor;
             public Color hoveredColor;
-            public Color pressedColor;
+            public Color canMatchedColor;
             public Color selectedColor;
             public Color penColor;
         }
@@ -18,8 +18,8 @@ namespace Match3.GameParams
             backgroundColor = Color.CornflowerBlue,
             defaultColor = Color.White,
             hoveredColor = Color.LightGray,
-            pressedColor = Color.Gray,
-            selectedColor = Color.IndianRed,
+            canMatchedColor = Color.IndianRed,
+            selectedColor = Color.Gray,
             penColor = Color.Black
         };
 
@@ -53,17 +53,17 @@ namespace Match3.GameParams
         public struct SNames
         {
             public string playButtonText;
+            public string exitButtonText;
         }
         public static SNames _names = new SNames()
         {
-            playButtonText = "Play"
+            playButtonText = "Play",
+            exitButtonText = "OK"
         };
 
         public struct SConstants
         {
             public int fieldSize;
-            public float defaultScale;
-            public float tileScale;
             public int minRectangleSize;
             public int tileSize;
         }
@@ -71,20 +71,24 @@ namespace Match3.GameParams
         {
             fieldSize = 8,
             minRectangleSize = 1,
-            tileSize = 51
+            tileSize = 50
         };
 
         public struct SPositions
         {
             public Vector2 scorePosition;
+            public Vector2 finalScorePosition;
             public Vector2 timerPosition;
             public Vector2 gridPosition;
+            public Vector2 defaultButtonPosition;
         }
         public static SPositions _positions = new SPositions()
         {
             gridPosition = new Vector2(0,0),
             scorePosition = new Vector2(500, 25),
-            timerPosition = new Vector2(500, 55)
+            finalScorePosition = new Vector2(350, 150),
+            timerPosition = new Vector2(500, 55),
+            defaultButtonPosition = new Vector2(350, 250)
         };
     }
 }

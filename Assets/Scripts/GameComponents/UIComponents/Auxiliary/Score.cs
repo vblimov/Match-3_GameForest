@@ -20,16 +20,10 @@
         {
             _score += amount;
         }
-        public static void SetScore(int amount)
-        {
-            _score = amount;
-        }
-
         public static void Reset()
         {
             _score = 0;
         }
-
         #endregion
     }
 }

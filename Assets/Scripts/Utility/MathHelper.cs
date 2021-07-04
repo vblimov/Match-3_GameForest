@@ -20,7 +20,6 @@ namespace Match3.Utility
             {
                 throw new ArgumentException("Tile cannot be null");
             }
-
             var standingNearHorizontal = Math.Abs(firstTile.GridPosition.Column - secondTile.GridPosition.Column);
             var standingNearVertical = Math.Abs(firstTile.GridPosition.Row - secondTile.GridPosition.Row);
             return standingNearHorizontal + standingNearVertical == 1;

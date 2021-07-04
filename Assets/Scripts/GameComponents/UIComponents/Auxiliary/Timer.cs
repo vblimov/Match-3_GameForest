@@ -10,6 +10,8 @@ namespace Match3.GameComponents.UIComponents.Auxiliary
         #region Fields
 
         private static float _timeRemaining;
+        //need it to calculate time, because of Monogame Update func calls 120 times per frame
+        private static int timeOffset = 2;
 
         private static bool _isExpired = false;
 
@@ -44,7 +46,7 @@ namespace Match3.GameComponents.UIComponents.Auxiliary
                 return;
             }
 
-            _timeRemaining -= (float) gameTime.ElapsedGameTime.TotalSeconds;
+            _timeRemaining -= (float) gameTime.ElapsedGameTime.TotalSeconds / timeOffset;
 
             _timeRemaining = MathF.Max(0F, _timeRemaining);
 

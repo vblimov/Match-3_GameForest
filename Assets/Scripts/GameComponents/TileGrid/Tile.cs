@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security;
 using System.Threading.Tasks;
 using Match3.Enums;
 using Match3.GameComponents.UIComponents.Auxiliary;
@@ -23,18 +24,21 @@ namespace Match3.GameComponents.TileGrid
         private Texture2D _texture;
         private Color componentColor = GameSettings._colors.defaultColor;
         private bool _isHovering;
-        private Vector2 _previousPosition = new Vector2();
-        private Vector2 _nextPosition = new Vector2();
-        public TileState _state = TileState.Stay;
+        private Vector2 _previousPosition;
+        private Vector2 _nextPosition;
+        private TileState _state = TileState.Stay;
         private const float lerpSpeed = 0.1f;
+        private float alphaValue = 5;
 
         #endregion
 
         #region Properties
+
         public bool CanMatch { get; set; }
         public TileType TileType { get; private set; }
         public bool IsSelected { get; set; }
         public Vector2 Position { get; private set; }
+
         public (int Column, int Row) GridPosition =>
         (
             (int) Position.X / GameSettings._constants.tileSize,
@@ -60,16 +64,17 @@ namespace Match3.GameComponents.TileGrid
             ResourcesLoader.Tiles.TryGetValue(tileType, out _texture);
             TileType = tileType;
         }
+
         public Tile(Tile tile)
         {
             Position = new Vector2(
                 tile.GridPosition.Column * GameSettings._constants.tileSize,
                 tile.GridPosition.Row * GameSettings._constants.tileSize
             );
-            // GridPosition = tile.GridPosition;
             ResourcesLoader.Tiles.TryGetValue(tile.TileType, out _texture);
             TileType = tile.TileType;
         }
+
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             componentColor =
@@ -77,8 +82,18 @@ namespace Match3.GameComponents.TileGrid
                     ? GameSettings._colors.hoveredColor
                     : IsSelected
                         ? GameSettings._colors.selectedColor
-                        : GameSettings._colors.defaultColor;
-            spriteBatch.Draw(_texture, Rectangle, componentColor);
+                        : CanMatch
+                            ? GameSettings._colors.canMatchedColor
+                            : GameSettings._colors.defaultColor;
+            alphaValue += alphaValue;
+            spriteBatch.Draw(
+                _texture, 
+                Rectangle, 
+                new Color(
+                    componentColor.R, 
+                    componentColor.G, 
+                    componentColor.B, 
+                    (byte)MathHelper.Clamp(alphaValue, 0, 255)));
             Update(gameTime);
         }
 
@@ -102,18 +117,20 @@ namespace Match3.GameComponents.TileGrid
             {
                 _previousPosition = Position;
             }
+
             _state = isRollBack ? TileState.MoveRollBackForward : TileState.Move;
         }
+
         private void Move(GameTime gameTime, TileState tileState)
         {
-            if(tileState == TileState.Stay) return;
+            if (tileState == TileState.Stay) return;
             var newPosition = new Vector2(
                 MathHelper.Lerp(Position.X, _nextPosition.X, lerpSpeed),
                 MathHelper.Lerp(Position.Y, _nextPosition.Y, lerpSpeed)
             );
             var distance = Math.Abs(Vector2.Distance(newPosition, Position));
             Position = newPosition;
-            
+
             if (distance < Utility.MathHelper.FLOAT_TOLERANCE)
             {
                 Position = _nextPosition;
@@ -125,6 +142,7 @@ namespace Match3.GameComponents.TileGrid
                 else
                 {
                     _state = TileState.Stay;
+                    GameStatesHandler.GameState = GameState.UserInput;
                 }
             }
         }
@@ -134,6 +152,7 @@ namespace Match3.GameComponents.TileGrid
             _texture = ResourcesLoader.Tile;
             TileType = TileType.None;
         }
+
         #endregion
     }
 }

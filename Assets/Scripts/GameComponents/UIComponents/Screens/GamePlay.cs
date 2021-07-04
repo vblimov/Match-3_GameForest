@@ -1,8 +1,10 @@
-﻿using Match3.GameParams;
+﻿using Match3.Enums;
+using Match3.GameParams;
 using Match3.Resources;
 using Match3.GameComponents.UIComponents.Auxiliary;
 using Match3.GameComponents.TileGrid;
 using Match3.GameComponents.UIComponents.ScreenComponents;
+using Match3.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -34,9 +36,16 @@ namespace Match3.GameComponents.UIComponents.Screens
         public override void Load()
         {
             Timer.Reset();
-            // Timer.AddListener(() => { ScreenManager.Game.Exit(); });
+            Timer.AddListener(EndGame);
             Score.Reset();
             base.Load();
+        }
+
+        private void EndGame()
+        {
+            GameStatesHandler.GameState = GameState.UserInput;
+            ScreenManager.AddScreen(new GameOver(ScreenManager));
+            ExitScreen();
         }
 
         public override void Draw(GameTime gameTime)
@@ -57,6 +66,11 @@ namespace Match3.GameComponents.UIComponents.Screens
             _grid.Update(gameTime);
         }
 
+        public override void ExitScreen()
+        {
+            base.ExitScreen();
+            _grid.UnloadContent(content);
+        }
         #endregion
     }
 }

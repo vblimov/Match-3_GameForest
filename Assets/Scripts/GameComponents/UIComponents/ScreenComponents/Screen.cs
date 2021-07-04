@@ -12,7 +12,7 @@ namespace Match3.GameComponents.UIComponents.ScreenComponents
         protected ContentManager content;
         protected readonly Color _backgroundColor = Color.CornflowerBlue;
 
-        public ScreenManager ScreenManager { get; internal set; }
+        protected ScreenManager ScreenManager { get; set; }
 
         #endregion
 
@@ -38,7 +38,7 @@ namespace Match3.GameComponents.UIComponents.ScreenComponents
             
         }
 
-        public void ExitScreen()
+        public virtual void ExitScreen()
         {
             ScreenManager.RemoveScreen(this);
         }

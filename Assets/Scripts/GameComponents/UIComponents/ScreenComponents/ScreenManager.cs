@@ -66,7 +66,8 @@ namespace Match3.GameComponents.UIComponents.ScreenComponents
 
         public override void Update(GameTime gameTime)
         {
-            foreach (var screen in _screens)
+            _screens.ForEach(screen => _screensCopy.Add(screen));
+            foreach (var screen in _screensCopy)
             {
                 screen.Update(gameTime);
             }

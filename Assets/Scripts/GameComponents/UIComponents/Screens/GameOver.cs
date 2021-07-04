@@ -1,52 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
-using Match3.Enums;
-using Match3.GameParams;
-using Match3.GameComponents.UIComponents.Screens;
+using Match3.GameComponents.UIComponents.Auxiliary;
 using Match3.GameComponents.UIComponents.ScreenComponents;
 using Match3.GameComponents.UIComponents.Touchable;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+using Match3.GameParams;
 using Match3.Resources;
 using Match3.Utility;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Match3.GameComponents.UIComponents.Screens
 {
-    public class MainMenu : Screen
+    public class GameOver : Screen
     {
         #region Fields
         
         private SpriteBatch _spriteBatch;
         private List<TouchableComponent> _buttons;
-
-        #endregion
         
+        #endregion
+
         #region Methods
 
-        public MainMenu(ScreenManager screenManager)
+        public GameOver(ScreenManager screenManager)
         {
             ScreenManager = screenManager;
         }
 
         public override void Load()
         {
-            var playButton = new Button(
+            var exitButton = new Button(
                 ResourcesLoader.Button,
                 ResourcesLoader.Font,
                 GameSettings._positions.defaultButtonPosition,
-                GameSettings._names.playButtonText);
+                GameSettings._names.exitButtonText);
             _buttons = new List<TouchableComponent>()
             {
-                playButton
+                exitButton
             };
-            playButton.Click += PlayGame;
+            exitButton.Click += ExitGame;
             base.Load();
         }
 
-        private void PlayGame(object sender, EventArgs e)
+        private void ExitGame(object sender, EventArgs e)
         {
-            ScreenManager.AddScreen(new GamePlay(ScreenManager));
+            ScreenManager.AddScreen(new MainMenu(ScreenManager));
             ExitScreen();
         }
 
@@ -56,6 +54,8 @@ namespace Match3.GameComponents.UIComponents.Screens
             Console.Write(_spriteBatch);
             _spriteBatch.Begin();
             _buttons.ForEach(button => button.Draw(gameTime, _spriteBatch));
+            _spriteBatch.DrawString(ResourcesLoader.Font, Score.ScoreFormatted, 
+                GameSettings._positions.finalScorePosition, GameSettings._colors.penColor);
             _spriteBatch.End();
             base.Draw(gameTime);
         }

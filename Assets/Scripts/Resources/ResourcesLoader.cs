@@ -17,6 +17,7 @@ namespace Match3.Resources
         public static Texture2D Button { get; private set; }
 
         public static Texture2D Tile { get; private set; }
+        public static Texture2D Grid { get; private set; }
 
         public static Dictionary<TileType, Texture2D> Tiles { get; } =
             new Dictionary<TileType, Texture2D>(Enum.GetValues(typeof(TileType)).Length);
@@ -34,6 +35,7 @@ namespace Match3.Resources
             {
                 Tiles.Add(tile, Content.Load<Texture2D>(tile.TexturePath()));
             }
+            Grid = Content.Load<Texture2D>(GameSettings._paths.gridPath);
         }
 
         #endregion

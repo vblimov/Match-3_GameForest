@@ -5,6 +5,7 @@ using Match3.GameParams;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using System.Linq;
+using Match3.Resources;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Match3.GameComponents.TileGrid
@@ -14,7 +15,8 @@ namespace Match3.GameComponents.TileGrid
         #region Fields
 
         public static Grid instance;
-        private readonly GridController _gridController;
+        private GridController _gridController;
+        private Texture2D[,] backgroundGrid = new Texture2D[GameSettings._constants.fieldSize,GameSettings._constants.fieldSize];
         #endregion
         
         #region Methods
@@ -29,9 +31,15 @@ namespace Match3.GameComponents.TileGrid
         {
             _gridController.LoadContent(Content);
         }
+        public void UnloadContent(ContentManager Content)
+        {
+            _gridController.UnloadContent(Content);
+        }
+        
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            spriteBatch.Draw(ResourcesLoader.Grid, GameSettings._positions.gridPosition, GameSettings._colors.defaultColor);
             for (var i = 0; i < _gridController._tiles.GetLength(0); i++)
             {
                 for (var j = 0; j < _gridController._tiles.GetLength(1); j++)
