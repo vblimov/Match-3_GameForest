@@ -66,12 +66,18 @@ namespace Match3.GameParams
             public int fieldSize;
             public int minRectangleSize;
             public int tileSize;
+            public int fadeSpeed;
+            public int minFadeValue;
+            public int maxFadeValue;
         }
         public static SConstants _constants = new SConstants()
         {
             fieldSize = 8,
             minRectangleSize = 1,
-            tileSize = 50
+            tileSize = 50,
+            fadeSpeed = 20,
+            minFadeValue = 1,
+            maxFadeValue = 255
         };
 
         public struct SPositions
@@ -84,10 +90,10 @@ namespace Match3.GameParams
         }
         public static SPositions _positions = new SPositions()
         {
-            gridPosition = new Vector2(0,0),
-            scorePosition = new Vector2(500, 25),
+            gridPosition = new Vector2(50,50),
+            scorePosition = new Vector2(500, 50),
             finalScorePosition = new Vector2(350, 150),
-            timerPosition = new Vector2(500, 55),
+            timerPosition = new Vector2(500, 85),
             defaultButtonPosition = new Vector2(350, 250)
         };
     }

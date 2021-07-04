@@ -15,6 +15,11 @@ using MathHelper = Microsoft.Xna.Framework.MathHelper;
 
 namespace Match3.GameComponents.TileGrid
 {
+    enum FadeState
+    {
+        FadeIn,
+        FadeOut
+    }
     public class Tile
     {
         #region Fields
@@ -27,8 +32,9 @@ namespace Match3.GameComponents.TileGrid
         private Vector2 _previousPosition;
         private Vector2 _nextPosition;
         private TileState _state = TileState.Stay;
-        private const float lerpSpeed = 0.1f;
-        private float alphaValue = 5;
+        private const float _lerpSpeed = 0.1f;
+        private float _colorAlphaValue = 1;
+        private FadeState _fadeState = FadeState.FadeIn;
 
         #endregion
 
@@ -41,8 +47,8 @@ namespace Match3.GameComponents.TileGrid
 
         public (int Column, int Row) GridPosition =>
         (
-            (int) Position.X / GameSettings._constants.tileSize,
-            (int) Position.Y / GameSettings._constants.tileSize
+            (int) (Position.X - GameSettings._positions.gridPosition.X) / GameSettings._constants.tileSize,
+            (int) (Position.Y - GameSettings._positions.gridPosition.Y) / GameSettings._constants.tileSize
         );
 
         private Rectangle Rectangle => new Rectangle(
@@ -58,8 +64,8 @@ namespace Match3.GameComponents.TileGrid
         public Tile((int column, int row) gridPosition, TileType tileType)
         {
             Position = new Vector2(
-                gridPosition.column * GameSettings._constants.tileSize,
-                gridPosition.row * GameSettings._constants.tileSize
+                gridPosition.column * GameSettings._constants.tileSize + GameSettings._positions.gridPosition.X,
+                gridPosition.row * GameSettings._constants.tileSize + GameSettings._positions.gridPosition.Y
             );
             ResourcesLoader.Tiles.TryGetValue(tileType, out _texture);
             TileType = tileType;
@@ -85,15 +91,25 @@ namespace Match3.GameComponents.TileGrid
                         : CanMatch
                             ? GameSettings._colors.canMatchedColor
                             : GameSettings._colors.defaultColor;
-            alphaValue += alphaValue;
+            if (CanMatch)
+            {
+                if (_fadeState == FadeState.FadeIn)
+                {
+                    _colorAlphaValue = GameSettings._constants.maxFadeValue;
+                    _fadeState = FadeState.FadeOut;
+                }
+                _colorAlphaValue -= GameSettings._constants.fadeSpeed;
+            }
+            else
+            {_colorAlphaValue += GameSettings._constants.fadeSpeed;}
             spriteBatch.Draw(
-                _texture, 
-                Rectangle, 
+                _texture,
+                Rectangle,
                 new Color(
-                    componentColor.R, 
-                    componentColor.G, 
-                    componentColor.B, 
-                    (byte)MathHelper.Clamp(alphaValue, 0, 255)));
+                    componentColor.R,
+                    componentColor.G,
+                    componentColor.B,
+                    (byte) MathHelper.Clamp(_colorAlphaValue, 0, 255)));
             Update(gameTime);
         }
 
@@ -125,8 +141,8 @@ namespace Match3.GameComponents.TileGrid
         {
             if (tileState == TileState.Stay) return;
             var newPosition = new Vector2(
-                MathHelper.Lerp(Position.X, _nextPosition.X, lerpSpeed),
-                MathHelper.Lerp(Position.Y, _nextPosition.Y, lerpSpeed)
+                MathHelper.Lerp(Position.X, _nextPosition.X, _lerpSpeed),
+                MathHelper.Lerp(Position.Y, _nextPosition.Y, _lerpSpeed)
             );
             var distance = Math.Abs(Vector2.Distance(newPosition, Position));
             Position = newPosition;
@@ -145,12 +161,6 @@ namespace Match3.GameComponents.TileGrid
                     GameStatesHandler.GameState = GameState.UserInput;
                 }
             }
-        }
-
-        public void Destroy()
-        {
-            _texture = ResourcesLoader.Tile;
-            TileType = TileType.None;
         }
 
         #endregion

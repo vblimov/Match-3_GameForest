@@ -3,6 +3,7 @@
     public enum GameState
     {
         UserInput,
+        GeneratingTiles,
         Swiping,
         Matching,
         Falling,

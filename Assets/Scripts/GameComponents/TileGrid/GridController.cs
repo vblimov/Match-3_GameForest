@@ -82,22 +82,30 @@ namespace Match3.GameComponents.TileGrid
 
         private async void UpdateGameState(GameState state)
         {
-            await GameStatesHandler.WaitForSeconds(state == GameState.UserInput ? 0 : 0.35f);
+            
             switch (state)
             {
                 case GameState.UserInput:
                     break;
                 case GameState.Swiping:
+                    await GameStatesHandler.WaitForSeconds(0.25f);
                     SwapTiles();
                     break;
                 case GameState.Matching:
+                    await GameStatesHandler.WaitForSeconds(0.35f);
                     ClearMatches();
                     break;
                 case GameState.Falling:
+                    await GameStatesHandler.WaitForSeconds(0.25f);
                     FallTiles();
                     break;
                 case GameState.Filling:
+                    await GameStatesHandler.WaitForSeconds(0.35f);
                     FillTiles();
+                    break;
+                case GameState.GeneratingTiles:
+                    await GameStatesHandler.WaitForSeconds(0.35f);
+                    GameStatesHandler.GameState = CheckMatches() ? GameState.Matching : GameState.UserInput;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(state), state, null);
@@ -112,8 +120,8 @@ namespace Match3.GameComponents.TileGrid
             }
             //get row and column of touched tile
             var (row, column) = (
-                yPos / GameSettings._constants.tileSize,
-                xPos / GameSettings._constants.tileSize);
+                (int) ((yPos - GameSettings._positions.gridPosition.Y) / GameSettings._constants.tileSize),
+                (int) ((xPos - GameSettings._positions.gridPosition.X) / GameSettings._constants.tileSize));
 
             _previousSelectedTile = _currentSelectedTile;
             _currentSelectedTile = _tiles[column, row];
@@ -161,6 +169,7 @@ namespace Match3.GameComponents.TileGrid
 
         private void FillTiles()
         {
+            GameStatesHandler.GameState = GameState.GeneratingTiles;
             for (var x = 0; x < _tiles.GetLength(0); x++)
             {
                 for (var y = 0; y < _tiles.GetLength(1); y++)
@@ -168,7 +177,6 @@ namespace Match3.GameComponents.TileGrid
                     _tiles[x, y] ??= new Tile((x, y), RandomTile);
                 }
             }
-            GameStatesHandler.GameState = CheckMatches() ? GameState.Matching : GameState.UserInput;
         }
 
         private bool CheckMatches()
